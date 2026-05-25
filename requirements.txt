@@ -1,0 +1,4 @@
+python-bale-bot
+yt-dlp
+aiomysql
+pydantic-settings
