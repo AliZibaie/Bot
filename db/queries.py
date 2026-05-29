@@ -1,5 +1,5 @@
 from aiomysql import Pool
-
+import aiomysql
 
 async def upsert_user(pool: Pool, platform: str, platform_user_id: int, username: str | None) -> None:
     async with pool.acquire() as conn:

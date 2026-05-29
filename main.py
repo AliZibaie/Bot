@@ -15,7 +15,7 @@ async def main():
     print("ربات در حال راه‌اندازی...")
 
     try:
-        await bot.start()
+        bot.start()
     except KeyboardInterrupt:
         print("\nدریافت سیگنال خاموش شدن...")
     except asyncio.CancelledError:
@@ -27,11 +27,10 @@ async def main():
 
 
 if __name__ == "__main__":
-    # Windows: use ProactorEventLoop (default on 3.8+)
     if sys.platform == "win32":
+        import asyncio
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        pass
+    bot = BaleBot(token=settings.bale_token)
+    print("ربات در حال راه‌اندازی...")
+    bot.start()

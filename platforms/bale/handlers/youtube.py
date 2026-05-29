@@ -69,8 +69,9 @@ async def handle_youtube_url(message: bale.Message, pool, url: str) -> None:
     audio_formats = [f for f in video_info['formats'] if f['vcodec'] == 'none']
 
     # Add video quality buttons
+    row_num = 1
     row = []
-    for fmt in video_formats[:3]:  # Show top 3 video formats
+    for fmt in video_formats[:3]:
         quality = fmt['resolution'] or fmt['quality']
         button = bale.InlineKeyboardButton(
             text=f"🎥 {quality}",
@@ -78,20 +79,24 @@ async def handle_youtube_url(message: bale.Message, pool, url: str) -> None:
         )
         row.append(button)
         if len(row) == 2:
-            keyboard.add(*row)
+            for btn in row:
+                keyboard.add(btn, row_num)
+            row_num += 1
             row = []
 
     if row:
-        keyboard.add(*row)
+        for btn in row:
+            keyboard.add(btn, row_num)
+        row_num += 1
 
-    # Add audio button
     if audio_formats:
         audio_fmt = audio_formats[0]
         keyboard.add(
             bale.InlineKeyboardButton(
                 text="🎵 فقط صدا (MP3)",
                 callback_data=f"youtube_dl:{video_info['id']}:{audio_fmt['format_id']}"
-            )
+            ),
+            row_num
         )
 
     await message.reply(response, components=keyboard)
@@ -165,5 +170,5 @@ def format_number(num: Optional[int]) -> str:
 
 async def get_user_by_platform(pool, platform: str, platform_user_id: int):
     """Get user by platform (temporary until proper import)."""
-    from db.queries import get_user_by_platform as get_user
-    return await get_user(pool, platform, platform_user_id)
+    from db.queries import  log_search, log_download, get_user_by_platform
+    return await get_user_by_platform(pool, platform, platform_user_id)

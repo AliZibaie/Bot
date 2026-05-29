@@ -10,9 +10,15 @@ class BaleBot(BasePlatform):
         self.client = bale.Bot(token=token)
         self._register_handlers()
 
+        @self.client.listen("on_ready")
+        async def on_ready():
+            await get_pool()
+            print("دیتابیس آماده شد.")
+
     def _register_handlers(self):
         @self.client.listen("on_message")
         async def on_message(message: bale.Message):
+            print(f"پیام دریافت شد: {message.text}")
             if not message.text:
                 return
 
@@ -37,11 +43,12 @@ class BaleBot(BasePlatform):
                 await youtube.handle(message, pool)
             elif pinterest.is_pinterest(text):
                 await pinterest.handle(message, pool)
+            else:
+                await message.reply("دستور نامعتبر است.")
 
-    async def start(self):
+    def start(self):
         # Run the blocking run() method in a thread
-        import asyncio
-        await asyncio.to_thread(self.client.run)
+        self.client.run()
 
     async def stop(self):
         from db.engine import close_pool
