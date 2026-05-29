@@ -1,0 +1,41 @@
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+db.sqlite3
+*.db
+media/
+staticfiles/
+
+# Environment
+.env
+.venv
+venv/
+env/
+
+
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Runtime
+*.pid
+*.seed
+
+# Coverage
+.coverage
+htmlcov/
+

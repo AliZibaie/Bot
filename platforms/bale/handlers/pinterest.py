@@ -1,6 +1,21 @@
-from bale import Message
+import bale
+from typing import Optional
+from services.pinterest import handle_pinterest_message, is_pinterest
+from db.engine import get_pool
 
-def register(client):
-    @client.message_handler()
-    async def pinterest_handler(message: Message):
-        await message.reply("🔍 Pinterest handler — coming soon.")
+
+async def handle(message: bale.Message) -> None:
+    """
+    Handle incoming messages for Pinterest.
+    This function acts as a dispatcher to the service layer logic.
+    """
+    # Prepare message data in a dictionary format expected by the service layer
+    message_data = {
+        "text": message.text,
+        "user_id": message.from_user.id,
+        "username": message.from_user.username,
+        "full_name": message.from_user.first_name,
+    }
+
+    response = await handle_pinterest_message(message_data, "bale")
+    await message.reply(response)
