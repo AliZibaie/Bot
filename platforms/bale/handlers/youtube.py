@@ -1,13 +1,13 @@
 import bale
 from typing import Optional
 from services.youtube import youtube_service
-from db.queries import log_search, log_download
+from db.queries import log_search, log_download, get_user_by_platform
 from utils.helpers import extract_url, truncate
 
 
 def is_youtube(text: str) -> bool:
     """Check if text is related to YouTube."""
-    return youtube_service.is_youtube_url(text) or text.startswith('/youtube') or 'یوتیوب' in text.lower()
+    return youtube_service.is_youtube_url(text) or text.startswith('/youtube')
 
 
 async def handle(message: bale.Message, pool) -> None:
@@ -145,14 +145,15 @@ async def search_youtube(message: bale.Message, pool, query: str) -> None:
     await message.reply(response, components=keyboard)
 
 
-def format_duration(seconds: Optional[int]) -> str:
+def format_duration(seconds: Optional[int | float]) -> str:
     """Format duration in seconds to HH:MM:SS."""
     if not seconds:
         return "نامشخص"
 
-    hours = seconds // 3600
-    minutes = (seconds % 3600) // 60
-    secs = seconds % 60
+    total_seconds = int(seconds)
+    hours = total_seconds // 3600
+    minutes = (total_seconds % 3600) // 60
+    secs = total_seconds % 60
 
     if hours > 0:
         return f"{hours:02d}:{minutes:02d}:{secs:02d}"
@@ -168,7 +169,3 @@ def format_number(num: Optional[int]) -> str:
     return f"{num:,}".replace(",", "٬")
 
 
-async def get_user_by_platform(pool, platform: str, platform_user_id: int):
-    """Get user by platform (temporary until proper import)."""
-    from db.queries import  log_search, log_download, get_user_by_platform
-    return await get_user_by_platform(pool, platform, platform_user_id)
